@@ -10,8 +10,7 @@ import (
 )
 
 type Block struct {
-	Timestamp int64
-	// Data          []byte
+	Timestamp     int64
 	Transactions  []*Transaction
 	PrevBlockHash []byte
 	Hash          []byte
