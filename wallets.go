@@ -14,14 +14,16 @@ type Wallets struct {
 func NewWallets() (*Wallets, error) {
 	wallets := Wallets{}
 	wallets.Wallets = make(map[string]*Wallet)
-
+	err := wallets.LoadFromFile()
+	if err != nil {
+		return &wallets, err
+	}
 	return &wallets, nil
 }
 
 func (ws *Wallets) CreateWallet() string {
 	wallet := NewWallet()
 	address := string(wallet.GetAddress())
-
 	ws.Wallets[address] = wallet
 
 	return address
@@ -42,8 +44,12 @@ func (ws Wallets) GetWallet(address string) Wallet {
 }
 
 func (ws *Wallets) LoadFromFile() error {
-	if _, err := os.Stat(walletFile); os.IsNotExist(err) {
-		return err
+	if _, err := os.Stat(walletFile); err != nil  {
+		if  !os.IsNotExist(err) {
+			return err
+		}else {
+			return nil
+		}
 	}
 
 	fileContent, err := os.ReadFile(walletFile)
